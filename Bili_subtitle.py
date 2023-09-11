@@ -1,3 +1,4 @@
+#!/data/data/com.termux/files/usr/bin/python
 from json import loads
 from requests import get
 

@@ -1,3 +1,4 @@
+#!/data/data/com.termux/files/usr/bin/python
 from os import popen
 from sys import argv
 from json import load

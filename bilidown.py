@@ -1,3 +1,4 @@
+#!/data/data/com.termux/files/usr/bin/python
 from tqdm import tqdm
 from json import loads,dumps
 from requests import session

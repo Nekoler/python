@@ -1,3 +1,4 @@
+#!/data/data/com.termux/files/usr/bin/python
 from os import popen
 from time import sleep
 from random import randint

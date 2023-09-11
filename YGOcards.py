@@ -1,3 +1,4 @@
+#!/data/data/com.termux/files/usr/bin/python
 import numpy
 from PIL import Image
 

@@ -1,3 +1,4 @@
+#!/data/data/com.termux/files/usr/bin/python
 from json import dumps
 from qrcode import QRCode
 from base64 import b64encode
