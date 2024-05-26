@@ -11,18 +11,6 @@ def m3u8_handler(url:str,sess:Session):
         m3u8_text = m3u8.loads(m3u8_file.text,url)
     return [i.absolute_uri for i in m3u8_text.segments],m3u8_text.keys
 
-<<<<<<< HEAD
-def m3u8_handler(url:str):
-    m3u8_file = m3u8.loads(get(url).text,url)
-    return [i.absolute_uri for i in m3u8_file.segments],m3u8_file.keys
-
-def create_aes(key_iv:m3u8.Key):
-    key = get(key_iv.absolute_uri).content
-    if key_iv.iv == None:
-        iv = b'0000000000000000'
-    else:
-        iv = key_iv.iv[2:].encode()
-=======
 def create_aes(key_iv:m3u8.Key,sess:Session):
     with sess.get(key_iv.absolute_uri) as key_file:
         key = key_file.content
@@ -30,7 +18,6 @@ def create_aes(key_iv:m3u8.Key,sess:Session):
             iv = key_iv.iv[2:].encode()
         else:
             iv = b'0000000000000000'
->>>>>>> 7bad5e7 (update)
     return AES.new(key,AES.MODE_CBC,iv)
 
 def downloader(url:str,tmp_dir:str,ts_name:str,sess:Session):
@@ -54,27 +41,6 @@ def create_dir(tmp_dir:str):
     if not os.path.isdir(tmp_dir):
         os.mkdir(tmp_dir)
 
-<<<<<<< HEAD
-def ts_handle(filepath:str,ts_list:list,aescodec:_mode_cbc.CbcMode|None):
-    with open(filepath,'wb') as video:
-        if aescodec:
-            for i in ts_list:
-                with open(i,'rb') as ts_file:
-                    video.write(aescodec.decrypt(ts_file.read()))
-        else:
-            for i in ts_list:
-                with open(i,'rb') as ts_file:
-                    video.write(ts_file.read())
-
-
-
-segments,key_iv = m3u8_handler(argv[1])
-tmp_dir = argv[2]+'_tmp'
-create_dir(tmp_dir)
-ts_list = [tmp_dir+'/'+i.split('/')[-1] for i in segments]
-for i1,i2 in zip(ts_list,segments):
-    while active_count() > 16:
-=======
 def remove_dir(filename:str,tmp_dir:str):
     os.remove(f'tmp_{filename}')
     for i in os.listdir(tmp_dir):
@@ -93,19 +59,9 @@ def main(url:str,filename:str):
             while active_count() > 16:
                 pass
     while active_count() != 1:
->>>>>>> 7bad5e7 (update)
         pass
     ts_handler(f'tmp_{filename}',tmp_dir,ts_list,keys,sess)
     subprocess.run(f'ffmpeg -i tmp_{filename} -c copy {filename}',stderr=subprocess.DEVNULL)
     remove_dir(filename,tmp_dir)
 
-<<<<<<< HEAD
-while active_count() != 1:
-    pass
-if key_iv:
-    ts_handle(argv[2],ts_list,create_aes(key_iv[0]))
-else:
-    ts_handle(argv[2],ts_list,None)
-=======
 main(argv[1],argv[2])
->>>>>>> 7bad5e7 (update)
