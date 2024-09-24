@@ -1,44 +1,43 @@
-import re
 import os
+import re
+import csv
 import subprocess
 
-def csv_to_md(csv_name):
-	with open(csv_name,encoding='utf-8') as csv:
-		res = subprocess.run(['pandoc','-f','csv','-t','markdown'],stdin=csv,stdout=subprocess.PIPE,text=True)
-	return res.stdout
+
+def csv_to_md(caption,csv_name):
+	if caption:
+		caption = '\n:'+caption
+	with open(csv_name,encoding='utf-8') as csv_file:
+		list_table = list(csv.reader(csv_file))
+	list_table.insert(1,['-']*len(list_table[0]))
+	md_table = ['|'.join(i)+'\n' for i in list_table]
+	return str().join(md_table)+caption
 
 def src_to_table(md):
-	in_csv = re.findall(r'!\[.*?\]\(.+?\.csv\)',md)
-	if in_csv:
-		for i in in_csv:
-			csv_name = re.split(r'[\(\)\[\]]',i)[-2]
-			table = csv_to_md(csv_name)
-			md = md.replace(i,table)
-		global md_name
-		md_name = '_temp_table.md'
-		with open(md_name,'w',encoding='utf-8') as new_md:
-			new_md.write(md)
+	list_csv = re.findall(r'!\[.*?\]\(.+?\.csv\)',md)
+	for i in list_csv:
+		table_info = re.split(r'[\(\)\[\]]',i)
+		table = csv_to_md(table_info[1],table_info[3])
+		md = md.replace(i,table)
+	return md
 
 def mmd_to_svg(md):
 	if '```mermaid' in md:
-		global md_name
-		subprocess.run(['mmdc.cmd','-p','D:/Portable/Bin/Node.js/node_modules/puppeteerConfigFile.json','-i',md_name,'-o','_temp_.md'])
-		md_name = '_temp_.md'
+		subprocess.run(['mmdc.cmd','-p','D:/Portable/Bin/Node.js/node_modules/puppeteerConfigFile.json','-i','init.md','-o','_temp_.md'])
+		with open('_temp_.md',encoding='utf-8') as md_file:
+			md = md_file.read()
+	return md
 
-def md_to_docx():
-	global md_name
+def md_to_docx(md):
+	cmd = ['pandoc','-f','markdown','-C','-o','init.docx','--quiet']
 	if os.path.exists('reference.docx'):
-		subprocess.run(['pandoc',md_name,'-C','--reference-doc=reference.docx','-o','init.docx','--quiet'])
-	else:
-		subprocess.run(['pandoc',md_name,'-C','-o','init.docx','--quiet'])
+		cmd.append('--reference-doc=reference.docx')
+	subprocess.run(cmd,input=md.encode())
 
 def main():
-	global md_name
-	md_name = 'init.md'
-	md = open(md_name,encoding='utf-8').read()
-	src_to_table(md)
-	mmd_to_svg(md)
-	md_to_docx()
+	with open('init.md',encoding='utf-8') as md_file:
+		md = md_file.read()
+	md_to_docx(src_to_table(mmd_to_svg(md)))
 	subprocess.run(['cmd','/c','del','_temp_*'])
 
 main()
