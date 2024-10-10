@@ -23,7 +23,7 @@ def src_to_table(md):
 
 def mmd_to_svg(md):
 	if '```mermaid' in md:
-		subprocess.run(['mmdc.cmd','-p','D:/Portable/Bin/Node.js/node_modules/puppeteerConfigFile.json','-i','init.md','-o','_temp_.md'])
+		subprocess.run(['mmdc.cmd','-i','init.md','-o','_temp_.md'])
 		with open('_temp_.md',encoding='utf-8') as md_file:
 			md = md_file.read()
 	return md
