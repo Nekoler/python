@@ -16,7 +16,7 @@ def sec_to_hms(s:float)->str:
     return hms
 
 def frame_pipe(path:str)->subprocess.Popen:
-    cmd = ['ffmpeg.cmd','-i',path,'-c:v','rawvideo','-pix_fmt','gray','-f','rawvideo','-']
+    cmd = ['ffmpeg.cmd','-i',path,'-c:v','rawvideo','-pix_fmt','gray','-f','image2pipe','-']
     rawvideo = subprocess.Popen(cmd,stdout=subprocess.PIPE)
     return rawvideo
 
