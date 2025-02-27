@@ -6,15 +6,11 @@ if len(sys.argv) != 3:
     exit()
 
 update = {'妳':'你'}
-old = open(sys.argv[1],'r',encoding='utf-8')
-new = open(sys.argv[2],'w',encoding='utf-8')
-try:
+with open(sys.argv[1],'rb') as old,open(sys.argv[2],'wb') as new:
     temp = old.read()
-except:
-    old.close()
-    old = open(sys.argv[1],'r',encoding='gbk')
-    temp = old.read()
-temp = zhconv.convert(temp,'zh-cn',update)
-new.write(temp)
-old.close()
-new.close()
+    try:
+        temp = temp.decode('utf-8')
+    except:
+        temp = temp.decode('gbk')
+    temp = zhconv.convert(temp,'zh-cn',update)
+    new.write(temp.encode())
