@@ -10,7 +10,7 @@ for ass in asses:
     sub.info = {i: j for i, j in sub.info.items() if i in keys}
     events: list[pysubs2.SSAEvent] = []
     for line in sub.events:
-        if line.type == "Dialogue" and line.text:
+        if (line.type == "Dialogue") and (line.end - line.start) and line.text:
             events.append(line)
     sub.events = events
     sub.sort()
